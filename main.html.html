@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>El Baúl - Tienda Online</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f1f1f1;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #222;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: scale(1.02); }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .card-content { padding: 15px; }
+    .card h2 { margin: 0 0 10px; font-size: 20px; }
+    .card p { margin: 5px 0; }
+    .price {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin: 10px 0;
+    }
+    .botones a, .botones button {
+      display: inline-block;
+      margin: 5px 5px 0 0;
+      padding: 10px 15px;
+      border-radius: 6px;
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+      border: none;
+      cursor: pointer;
+    }
+    .wp { background-color: #25D366; }
+    .agregar-carrito {
+      position: relative;
+      background-color: #009ee3;
+    }
+    .agregar-carrito .contador {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #icono-carrito {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background-color: #009ee3;
+      color: white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      z-index: 1001;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 26px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    #icono-carrito:hover { background-color: #007bbd; }
+    #carrito {
+      position: fixed;
+      top: 70px;
+      right: 20px;
+      width: 320px;
+      max-height: 70vh;
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      border-radius: 10px;
+      padding: 15px;
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+    }
+    #carrito.show { display: flex; }
+    #carrito h3 { margin-top: 0; margin-bottom: 10px; }
+    #carrito ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      flex-grow: 1;
+    }
+    #carrito ul li {
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #carrito ul li span { flex-grow: 1; }
+    #carrito ul li button {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 2px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #total {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    #finalizar {
+      background-color: #25D366;
+      border: none;
+      color: white;
+      padding: 12px;
+      margin-top: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .formulario {
+      background-color: white;
+      padding: 20px;
+      max-width: 600px;
+      margin: 40px auto;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .formulario input, .formulario textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .formulario button {
+      background-color: #222;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #form-direccion {
+      display: none;
+      flex-direction: column;
+      margin-top: 15px;
+    }
+    #form-direccion label {
+      margin-bottom: 5px;
+    }
+    #form-direccion input {
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    #btn-enviar-final {
+      background-color: #222;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>El Baúl</h1>
+  <p>Tienda Online</p>
+</header>
+
+<div class="container">
+  <div class="card" data-id="1" data-nombre="Bicicleta" data-precio="550">
+    <img src="https://via.placeholder.com/600x300?text=Bicicleta+Rodado+29" alt="Bicicleta" />
+    <div class="card-content">
+      <h2>Bicicleta</h2>
+      <p>Es una linda bici rodado 29 para pasear.</p>
+      <p class="price">$550</p>
+      <div class="botones">
+        <button class="agregar-carrito" onclick="agregarAlCarrito(this)">
+          🛒 <span class="contador">0</span> Agregar al carrito
+        </button>
+        <a class="wp" href="https://wa.me/542225400094?text=Hola%2C+quiero+m%C3%A1s+informaci%C3%B3n+sobre+la+bicicleta." target="_blank">WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="icono-carrito" title="Mostrar carrito">🛒</div>
+
+<div id="carrito">
+  <h3>Carrito de Compras</h3>
+  <ul id="lista-carrito"></ul>
+  <p id="total">Total: $0</p>
+  <button id="finalizar">Finalizar compra</button>
+
+  <div id="form-direccion">
+    <label for="direccion">Dirección</label>
+    <input type="text" id="direccion" name="direccion" placeholder="Tu dirección completa" required />
+    <button id="btn-enviar-final">Finalizar</button>
+  </div>
+</div>
+
+<div class="formulario">
+  <h2>Contacto</h2>
+  <form action="mailto:ebernatanael91@gmail.com" method="post" enctype="text/plain">
+    <input type="text" name="nombre" placeholder="Tu nombre" required />
+    <input type="email" name="email" placeholder="Tu correo" required />
+    <textarea name="mensaje" placeholder="Escribí tu mensaje..." rows="5" required></textarea>
+    <button type="submit">Enviar mensaje</button>
+  </form>
+</div>
+
+<script>
+  const carrito = [];
+  const listaCarrito = document.getElementById('lista-carrito');
+  const totalCompra = document.getElementById('total');
+  const finalizarBtn = document.getElementById('finalizar');
+  const iconoCarrito = document.getElementById('icono-carrito');
+  const ventanaCarrito = document.getElementById('carrito');
+  const numeroWhatsApp = "542225400094";
+  const formDireccion = document.getElementById('form-direccion');
+  const btnEnviarFinal = document.getElementById('btn-enviar-final');
+
+  function actualizarCarrito() {
+    listaCarrito.innerHTML = '';
+    let total = 0;
+
+    carrito.forEach((item, index) => {
+      total += item.precio * item.cantidad;
+      const li = document.createElement('li');
+      li.innerHTML = `<span>${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toLocaleString()}</span>
+        <button onclick="eliminarDelCarrito(${index})">X</button>`;
+      listaCarrito.appendChild(li);
+    });
+
+    totalCompra.textContent = `Total: $${total.toLocaleString()}`;
+  }
+
+  function eliminarDelCarrito(index) {
+    carrito.splice(index, 1);
+    actualizarCarrito();
+  }
+
+  function agregarAlCarrito(btn) {
+    const card = btn.closest('.card');
+    const id = card.getAttribute('data-id');
+    const nombre = card.getAttribute('data-nombre');
+    const precio = parseFloat(card.getAttribute('data-precio'));
+    const contador = btn.querySelector('.contador');
+    let cantidad = parseInt(contador.textContent);
+    contador.textContent = cantidad + 1;
+
+    const productoExistente = carrito.find(p => p.id === id);
+    if (productoExistente) {
+      productoExistente.cantidad++;
+    } else {
+      carrito.push({ id, nombre, precio, cantidad: 1 });
+    }
+
+    actualizarCarrito();
+    ventanaCarrito.classList.add('show');
+  }
+
+  finalizarBtn.addEventListener('click', () => {
+    formDireccion.style.display = 'flex';
+  });
+
+  btnEnviarFinal.addEventListener('click', () => {
+    const direccion = document.getElementById('direccion').value.trim();
+    if (direccion === '') {
+      alert('Por favor ingresá tu dirección');
+      return;
+    }
+    let mensaje = 'Hola, quiero hacer el siguiente pedido:%0A';
+    carrito.forEach(item => {
+      mensaje += `- ${item.nombre} x${item.cantidad} - $${(item.precio * item.cantidad).toLocaleString()}%0A`;
+    });
+    let total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+    mensaje += `%0ATotal: $${total.toLocaleString()}%0ADirección: ${direccion}`;
+    const url = `https://wa.me/${numeroWhatsApp}?text=${mensaje}`;
+    window.open(url, '_blank');
+  });
+
+  iconoCarrito.addEventListener('click', () => {
+    ventanaCarrito.classList.toggle('show');
+  });
+
+  window.eliminarDelCarrito = eliminarDelCarrito;
+</script>
+</body>
+</html>
